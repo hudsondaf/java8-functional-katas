@@ -73,6 +73,7 @@ public class Kata11 {
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
 
+    
     public static List<Map> execute() {
 	List<Map> lists = DataUtil.getLists();
 	List<Map> videos = DataUtil.getVideos();
@@ -80,20 +81,23 @@ public class Kata11 {
 	List<Map> bookmarkList = DataUtil.getBookmarkList();
 
 	return lists.stream()
-		.map(list -> ImmutableMap.of(NAME, list.get(NAME), VIDEOS, videos
-			.stream().filter(video -> video.get(LIST_ID).equals(list.get(ID))).map(video -> ImmutableMap.of(
-				ID, video.get(ID), TITLE,
-				video.get(TITLE), TIME,
-				bookmarkList.stream()
-					.filter(bookmark -> video.get(ID).equals(bookmark.get(VIDEO_ID))).findFirst()
-					.get().get(
-						TIME),
-				BOXART,
-				boxArts.stream().filter(boxart -> boxart.get(VIDEO_ID).equals(video.get(ID)))
-					.reduce(KatasUtils::smallestBoxArt)
-					.get().get(URL)))
-			.collect(Collectors.toList())))
+		.map(functionListToImmutableMap( videos,  boxArts, bookmarkList))
 		.collect(Collectors.toList());
     }
     
+    public static Function<Map, ImmutableMap<String, Object>> functionMovieMapToImmutableMap(List<Map> boxArts, List<Map> bookmarkList){
+    	return video -> ImmutableMap.of(ID, video.get(ID), TITLE,video.get(TITLE), TIME,
+				bookmarkList.stream().filter(bookmark -> video.get(ID).equals(bookmark.get(VIDEO_ID))).findFirst()
+					.get().get(TIME),BOXART,
+				boxArts.stream().filter(boxart -> boxart.get(VIDEO_ID).equals(video.get(ID)))
+					.reduce(KatasUtils::smallestBoxArt).get().get(URL));
+    }
+    
+    public static Function<Map, ImmutableMap<String, Object>> functionListToImmutableMap(List<Map> videos, List<Map> boxArts, List<Map> bookmarkList){
+    	return list -> ImmutableMap.of(NAME, list.get(NAME), VIDEOS, videos
+			.stream().filter(video -> video.get(LIST_ID).equals(list.get(ID)))
+				.map(video -> functionMovieMapToImmutableMap( boxArts, bookmarkList))
+			.collect(Collectors.toList()));
+    }
+   
 }
