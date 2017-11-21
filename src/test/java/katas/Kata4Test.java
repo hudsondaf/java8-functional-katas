@@ -27,12 +27,12 @@ public class Kata4Test {
 	Assert.assertThat(Kata4.execute(),
 		equalTo(ImmutableList.of(
 			ImmutableMap.of(ID, 70111470, TITLE, "Die Hard", BOXART,
-				new BoxArt(150, 200, "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg")),
+				"http://cdn-0.nflximg.com/images/2891/DieHard150.jpg"),
 			ImmutableMap.of(ID, 654356453, TITLE, "Bad Boys", BOXART,
-				new BoxArt(150, 200, "http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg")),
+				"http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg"),
 			ImmutableMap.of(ID, 65432445, TITLE, "The Chamber", BOXART,
-				new BoxArt(150, 200, "http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg")),
+				"http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg"),
 			ImmutableMap.of(ID, 675465, TITLE, "Fracture", BOXART,
-				new BoxArt(150, 200, "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg")))));
+				"http://cdn-0.nflximg.com/images/2891/Fracture150.jpg"))));
     }
 }
