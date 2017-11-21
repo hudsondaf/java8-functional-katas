@@ -18,7 +18,7 @@ public class Kata6 {
 	List<Movie> movies = DataUtil.getMovies();
 	
 	
-	return movies.stream().map(Movie::getBoxarts).flatMap(List::stream)
+	return movies.stream().flatMap(movie -> movie.getBoxarts().stream())
 	.reduce((boxart1,
 		boxart2) -> boxart1.getHeight() * boxart1.getWidth() > boxart2.getHeight() * boxart2.getWidth()
 			? boxart1 : boxart2).map(BoxArt::getUrl).orElse("");
