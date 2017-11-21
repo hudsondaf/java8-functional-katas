@@ -15,13 +15,11 @@ public class Kata5 {
     public static Double execute() {
 
 	List<Movie> movies = DataUtil.getMovies();
+	
+	
+	return movies.stream()
+			.reduce((movie1, movie2) -> movie1.getRating() > movie2.getRating() ? movie1 : movie2)
+			.map(Movie::getRating).orElse(0.0);
 
-	Optional<Movie> movie = movies.stream()
-		.reduce((movie1, movie2) -> movie1.getRating() > movie2.getRating() ? movie1 : movie2);
-
-	if (movie.isPresent()) {
-	    return movie.get().getRating();
-	}
-	return 0.0;
     }
 }

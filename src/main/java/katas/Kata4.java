@@ -25,10 +25,11 @@ public class Kata4 {
 
 	List<MovieList> movieLists = DataUtil.getMovieLists();
 
-	return movieLists.stream().map(MovieList::getVideos).flatMap(List<Movie>::stream).map(video -> ImmutableMap.of(
-		ID, video.getId(), TITLE, video.getTitle(),
-		BOXART, video.getBoxarts().stream()
-			.filter(boxart -> boxart.getWidth() == 150 && boxart.getHeight() == 200).findFirst().get()))
-		.collect(Collectors.toList());
+	return movieLists.stream().map(MovieList::getVideos).flatMap(List<Movie>::stream)
+				.map(video -> ImmutableMap.of(ID, video.getId(), TITLE, video.getTitle(),
+						BOXART, video.getBoxarts().stream()
+				.filter(boxart -> boxart.getWidth() == 150 && boxart.getHeight() == 200).findFirst().get()))
+				.collect(Collectors.toList());
     }
 }
+
