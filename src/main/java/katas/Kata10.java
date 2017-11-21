@@ -2,6 +2,8 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
@@ -63,12 +65,22 @@ public class Kata10 {
 	List<Map> lists = DataUtil.getLists();
 	List<Map> videos = DataUtil.getVideos();
 
-	return lists.stream()
-		.map(list -> ImmutableMap.of(NAME, list.get(NAME), VIDEOS,
-			videos.stream().filter(video -> video.get(LIST_ID).equals(list.get(ID)))
-				.map(video -> ImmutableMap.of(ID, video.get(ID), TITLE, video.get(TITLE)))
-				.collect(Collectors.toList())))
-		.collect(Collectors.toList());
+	return lists.stream().map(functionMapToImmutableMap(videos)).collect(Collectors.toList());
+    }
+    
+    public static Function<Map, ImmutableMap<String, Object>> functionMapToImmutableMap(List<Map> videos){
+    	return list -> ImmutableMap.of(NAME, list.get(NAME), VIDEOS,
+			videos.stream().filter(predicateVideoListIdEqualsListId(list))
+				.map(functionVideoMapToImmutableMap())
+				.collect(Collectors.toList()));
+    }
+    
+    public static Predicate<Map> predicateVideoListIdEqualsListId(Map list){
+    	return video -> video.get(LIST_ID).equals(list.get(ID));
+    }
+    
+    public static Function<Map, ImmutableMap<String, Object>> functionVideoMapToImmutableMap(){
+    	return video -> ImmutableMap.of(ID, video.get(ID), TITLE, video.get(TITLE));
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import model.BoxArt;
 import model.Movie;
+import util.KatasUtils;
 import util.DataUtil;
 
 /*
@@ -17,12 +18,6 @@ public class Kata6 {
 
 	List<Movie> movies = DataUtil.getMovies();
 	
-	
 	return movies.stream().flatMap(movie -> movie.getBoxarts().stream())
-	.reduce((boxart1,
-		boxart2) -> boxart1.getHeight() * boxart1.getWidth() > boxart2.getHeight() * boxart2.getWidth()
-			? boxart1 : boxart2).map(BoxArt::getUrl).orElse("");
-
-
-    }
+			.reduce(KatasUtils::largestBoxArt).map(BoxArt::getUrl).orElse("");}
 }

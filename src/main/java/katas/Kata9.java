@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.google.common.collect.ImmutableMap;
 
 import model.BoxArt;
+import model.Movie;
 import model.MovieList;
+import util.KatasUtils;
 import util.DataUtil;
 
 /*
@@ -27,22 +30,19 @@ public class Kata9 {
 
     public static List<Map> execute() {
 	List<MovieList> movieLists = DataUtil.getMovieLists();
+	
+	return movieLists.stream().flatMap(movieList -> movieList.getVideos().stream()).map(functionMovieToImmutableMap())
+			.collect(Collectors.toList());
+    }
+    
+    public static Function<Movie, ImmutableMap<String, Object>> functionMovieToImmutableMap(){
+    	return movieInternal -> 
 
-	return movieLists.stream().map(MovieList::getVideos).flatMap(List::stream).map(movieInternal -> {
-	    Optional<BoxArt> optionalBoxArtMovie = movieInternal.getBoxarts().stream().reduce((boxart1,
-		    boxart2) -> (boxart1.getHeight() * boxart1.getWidth() < boxart2.getHeight() * boxart2.getWidth()
-			    ? boxart1 : boxart2));
-	    OptionalInt optionalIndexInterestingMoment = IntStream
-		    .range(0, movieInternal.getInterestingMoments().size())
-		    .filter(n -> n > movieInternal.getInterestingMoments().size() / 2).findFirst();
-
-	    return ImmutableMap.of(ID, movieInternal.getId(), TITLE, movieInternal.getTitle(), TIME,
-		    movieInternal.getInterestingMoments()
-			    .get(optionalIndexInterestingMoment.isPresent() ? optionalIndexInterestingMoment.getAsInt()
-				    : 0)
-			    .getTime(),
-		    BOXART, optionalBoxArtMovie.isPresent() ? optionalBoxArtMovie.get().getUrl() : "");
-
-	}).collect(Collectors.toList());
+	    ImmutableMap.of(ID, movieInternal.getId(), TITLE, movieInternal.getTitle(), TIME,
+	    		movieInternal.getInterestingMoments().get(IntStream.range(0, movieInternal.getInterestingMoments().size())
+		    	.filter(n -> n > movieInternal.getInterestingMoments().size() / 2).findFirst().orElse(0)).getTime(),
+	    		BOXART, movieInternal.getBoxarts().stream().reduce(KatasUtils::smallestBoxArt)
+	    		.map(BoxArt::getUrl).orElse(""));
+			
     }
 }

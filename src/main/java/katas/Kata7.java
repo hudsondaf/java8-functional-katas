@@ -3,12 +3,16 @@ package katas;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
 import model.BoxArt;
+import model.Movie;
 import model.MovieList;
+import util.KatasUtils;
 import util.DataUtil;
 
 /*
@@ -25,15 +29,12 @@ public class Kata7 {
     public static List<Map> execute() {
 
 	List<MovieList> movieLists = DataUtil.getMovieLists();
-
-	return movieLists.stream().map(MovieList::getVideos).flatMap(List::stream).map(movieInternal -> {
-	    Optional<BoxArt> optionalBoxArtMovie = movieInternal.getBoxarts().stream().reduce((boxart1,
-		    boxart2) -> (boxart1.getHeight() * boxart1.getWidth() < boxart2.getHeight() * boxart2.getWidth()
-			    ? boxart1 : boxart2));
-	    return ImmutableMap.of(ID, movieInternal.getId(), TITLE, movieInternal.getTitle(), BOXART,
-		    optionalBoxArtMovie.isPresent() ? optionalBoxArtMovie.get().getUrl() : "");
-
-	}).collect(Collectors.toList());
-
+	
+	return movieLists.stream().flatMap(movieList -> movieList.getVideos().stream()).map(functionMovieToImmutableMap()).collect(Collectors.toList());
+    }
+    
+    public static Function<Movie, ImmutableMap<String, Object>> functionMovieToImmutableMap(){
+    	return movieInternal -> ImmutableMap.of(ID, movieInternal.getId(), TITLE, movieInternal.getTitle(), BOXART,
+	    		movieInternal.getBoxarts().stream().reduce(KatasUtils::smallestBoxArt).map(BoxArt::getUrl).orElse(""));
     }
 }

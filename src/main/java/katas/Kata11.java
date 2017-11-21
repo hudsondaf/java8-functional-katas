@@ -2,11 +2,13 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
 import util.DataUtil;
+import util.KatasUtils;
 
 /*
     Goal: Create a datastructure from the given data:
@@ -88,11 +90,10 @@ public class Kata11 {
 						TIME),
 				BOXART,
 				boxArts.stream().filter(boxart -> boxart.get(VIDEO_ID).equals(video.get(ID)))
-					.reduce((boxart1, boxart2) -> ((Integer) boxart1.get(WIDTH))
-						* ((Integer) boxart1.get(HEIGHT)) < ((Integer) boxart2.get(WIDTH))
-							* ((Integer) boxart2.get(HEIGHT)) ? boxart1 : boxart2)
+					.reduce(KatasUtils::smallestBoxArt)
 					.get().get(URL)))
 			.collect(Collectors.toList())))
 		.collect(Collectors.toList());
     }
+    
 }

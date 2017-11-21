@@ -2,6 +2,7 @@ package katas;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,13 +27,14 @@ public class Kata8 {
 	List<Movie> movies = DataUtil.getMovies();
 	List<Bookmark> bookMarks = DataUtil.getBookMarks();
 
-	// StreamUtils.zip()
 	Stream<Movie> streamMovies = movies.stream();
 	Stream<Bookmark> streamBookmarks = bookMarks.stream();
 
-	return StreamUtils
-		.zip(streamMovies, streamBookmarks,
-			(movie, bookmark) -> ImmutableMap.of(VIDEO_ID, movie.getId(), BOOKMARK_ID, bookmark.getId()))
+	return StreamUtils.zip(streamMovies, streamBookmarks, biFunctionCombine())
 		.collect(Collectors.toList());
+    }
+    
+    public static BiFunction<Movie, Bookmark, ImmutableMap<String, Object>> biFunctionCombine(){
+    	return (movie, bookmark) -> ImmutableMap.of(VIDEO_ID, movie.getId(), BOOKMARK_ID, bookmark.getId());
     }
 }
