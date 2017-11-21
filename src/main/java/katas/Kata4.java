@@ -27,7 +27,7 @@ public class Kata4 {
 
 	List<MovieList> movieLists = DataUtil.getMovieLists();
 
-	return movieLists.stream().map(MovieList::getVideos).flatMap(List<Movie>::stream)
+	return movieLists.stream().flatMap(movieList -> movieList.getVideos().stream())
 				.map(functionVideoToMap())
 				.collect(Collectors.toList());
     }
